@@ -35,9 +35,9 @@ const updateIngredient = async (req, res) => {
   knex('ingredient')
     .where('id', req.params.id)
     .update({
-      name: req.body.name /* || queryIngredient.name */,
-      name_plural: req.body.name_plural /* || queryIngredient.name_plural */,
-      unit_id: req.body.unit_id /* || queryIngredient.unit_id */,
+      name: req.body.name,
+      name_plural: req.body.name_plural,
+      unit_id: req.body.unit_id,
     })
     .then(rows => {
       return res.sendStatus(200)
