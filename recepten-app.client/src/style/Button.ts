@@ -2,8 +2,8 @@ import { base } from './base'
 
 declare module '@mui/material/Button' {
   interface ButtonPropsVariantOverrides {
-    primary: true;
-    secondary: true;
+    primary: true
+    secondary: true
   }
 }
 
@@ -19,9 +19,9 @@ export const Button = {
         background: `${base.primary}`,
         fontWeight: 'bold',
         color: `${base.light}`,
-        "&:hover": {
-          background: `${base.secondary}`
-        }
+        '&:hover': {
+          background: `${base.secondary}`,
+        },
       },
     },
     {
@@ -32,9 +32,9 @@ export const Button = {
         border: `1px solid ${base.border}`,
         fontWeight: 'bold',
         color: `${base.light}`,
-        "&:hover": {
-          background: `${base.primary}`
-        }
+        '&:hover': {
+          background: `${base.primary}`,
+        },
       },
     },
   ],

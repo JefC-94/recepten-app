@@ -21,8 +21,8 @@ let theme = createTheme({
       main: base.secondary,
     },
     border: {
-      main: base.border
-    }
+      main: base.border,
+    },
   },
 })
 

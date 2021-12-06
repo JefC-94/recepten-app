@@ -4,6 +4,7 @@ import { ThemeProvider } from '@mui/material/styles'
 import theme from './style/theme'
 import Typography from '@mui/material/Typography'
 import type {} from '@mui/lab/themeAugmentation'
+import { Test } from './containers/Test'
 
 export const App = () => (
   <ThemeProvider theme={theme}>
@@ -20,6 +21,7 @@ export const App = () => (
       </Box>
       <Typography color="secondary.main">Test</Typography>
       <Typography color="warning.dark">Alert</Typography>
+      <Test />
     </div>
   </ThemeProvider>
 )
