@@ -24,15 +24,18 @@ const getCartByUserId = async (req, res) => {
     res.status(500).send({ message: err.message })
   }
 
-  /*  pool.query(
+  /* pool.query(
     `SELECT
     cart.user_id,
     cart.id,
-    json_agg(cart_item.*) as cart_items
+    (
+      select 
+        json_agg(cart_item.*)
+      from cart_item
+      join cart ON cart_item.cart_id = cart.id
+      where cart.user_id = $1
+    ) as cart_items
     FROM cart
-    INNER JOIN cart_item ON cart.id = cart_item.cart_id
-    INNER JOIN ingredient ON cart_item.ingredient_id = ingredient.id
-    LEFT OUTER JOIN unit ON ingredient.unit_id = unit.id  
     WHERE cart.user_id = $1
     GROUP BY cart.user_id, cart.id
     `,

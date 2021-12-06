@@ -1,62 +1,67 @@
 const knex = require('../../db')
 const pool = require('../../db-pg')
 
-const getDishes = async (req, res) => {
-  const query = `
-  SELECT
-  dish.*,
-  jsonb_agg(type) as types,
-  jsonb_agg(cuisine) as cuisines
-  FROM dish
-  LEFT JOIN dish_type ON dish.id = dish_type.dish_id
-  LEFT JOIN type ON dish_type.type_id = type.id
-  LEFT JOIN dish_cuisine ON dish.id = dish_cuisine.dish_id
-  LEFT JOIN cuisine ON dish_cuisine.cuisine_id = cuisine.id
-  GROUP BY dish.id
+const baseQuery = `select d.*, 
+  (
+      select json_agg(t.*) 
+      from type t
+      join dish_type dt on t.id = dt.type_id 
+      where d.id=dt.dish_id
+  ) as types, 
+  (
+      select json_agg(c.*) 
+      from cuisine c 
+      join dish_cuisine dc on c.id = dc.cuisine_id 
+      where d.id = dc.dish_id
+  ) as cuisines,
+  (
+      select json_agg(cat.*)
+      from category cat
+      join dish_cat on cat.id = dish_cat.cat_id
+      where d.id = dish_cat.dish_id
+  ) as categories,
+  (
+      select 
+      json_agg(ing.*)
+      from ingredient ing
+      join dish_ingredient on ing.id = dish_ingredient.ingredient_id
+      where d.id = dish_ingredient.dish_id
+  ) as ingredients,
+  row_to_json(users.*) as user
+  from dish d
+  left join users on d.user_id = users.id
 `
 
-  pool.query(
-    `
-    SELECT
-  dish.*,
-  jsonb_agg(type) as types,
-  jsonb_agg(cuisine) as cuisines
-  FROM dish
-  LEFT JOIN dish_type ON dish.id = dish_type.dish_id
-  LEFT JOIN type ON dish_type.type_id = type.id
-  LEFT JOIN dish_cuisine ON dish.id = dish_cuisine.dish_id
-  LEFT JOIN cuisine ON dish_cuisine.cuisine_id = cuisine.id
-  GROUP BY dish.id
-  `,
-    (err, data) => {
-      if (err) {
-        res.status(500).send({ message: err.message })
-      } else {
-        const sortedResults = data.rows.sort((a, b) => (a.id > b.id ? 1 : -1))
-        res.status(200).send(sortedResults)
-      }
+const getDishes = async (req, res) => {
+  pool.query(baseQuery, (err, data) => {
+    if (err) {
+      res.status(500).send({ message: err.message })
+    } else {
+      const sortedResults = data.rows.sort((a, b) => (a.id > b.id ? 1 : -1))
+      res.status(200).send(sortedResults)
     }
-  )
+  })
 }
 
 const getDish = async (req, res) => {
-  pool.query(
-    `SELECT 
-    dish.*,
-    row_to_json(users.*) as user_id  
-    FROM dish
-    LEFT JOIN users ON dish.user_id = users.id
-    WHERE dish.id = $1
-  `,
-    [req.params.id],
-    (err, data) => {
-      if (err) {
-        res.status(500).send({ message: err })
-      } else {
-        res.status(200).send(data.rows[0])
-      }
+  pool.query(baseQuery + ` where d.id = $1`, [req.params.id], (err, data) => {
+    if (err) {
+      res.status(500).send({ message: err })
+    } else {
+      res.status(200).send(data.rows)
     }
-  )
+  })
+}
+
+const getDishesByUserId = async (req, res) => {
+  console.log(req.params.user_id)
+  pool.query(baseQuery + ` where d.user_id = $1`, [req.params.user_id], (err, data) => {
+    if (err) {
+      res.status(500).send({ message: err })
+    } else {
+      res.status(200).send(data.rows)
+    }
+  })
 }
 
 const createDish = async (req, res) => {
@@ -132,6 +137,7 @@ const deleteDish = async (req, res) => {
 
 module.exports = {
   getDishes,
+  getDishesByUserId,
   getDish,
   createDish,
   updateDish,
