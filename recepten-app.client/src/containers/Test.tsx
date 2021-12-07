@@ -1,39 +1,43 @@
 import React, { useState } from 'react'
-import { fetchPost, useFetch } from '../util/api/useFetch'
-import { Button, Container } from '@mui/material'
+import { fetchDelete, fetchPost, useFetch } from '../util/api/useFetch'
+import { Button, CircularProgress, Container } from '@mui/material'
 import { Detail } from './Detail'
-import { Unit } from '../types'
-import useSWR, { mutate } from 'swr'
-import axios from 'axios'
+import { Response, Unit } from '../types'
 
 export const Test = () => {
-  const url = 'http://localhost:7555/api/units'
-
-  const fetcher = (url: string) =>
-    axios.get(url).then((response: any) => {
-      return response.data
-    })
-
-  const { data: units, error } = useSWR<Unit[]>(url, fetcher)
+  const { data: units, error, loading, refetch } = useFetch<Unit[]>(`api/units`)
 
   const [selectedDishId, setSelectedDishId] = useState<number | null>(null)
 
   const createNew = async () => {
-    const newItemId = await fetchPost(`http://localhost:7555/api/units`, {
+    fetchPost(`api/units`, {
       name: 'test',
       name_plural: 'testen',
+    }).then((response: Response) => {
+      if (response.success) {
+        refetch()
+      } else {
+        console.log(response.message)
+      }
     })
-    if (newItemId) {
-      mutate(url)
-    } else {
-      alert('something went wrong')
-    }
+  }
+
+  const deleteItem = async (id: number) => {
+    fetchDelete(`api/units`, id).then((response: Response) => {
+      if (response.success) {
+        refetch()
+      } else {
+        console.log(response.message)
+      }
+    })
   }
 
   return (
-    <div>
+    <>
       {error && JSON.stringify(error)}
       <Container>
+        <h1>Units</h1>
+        {loading && <CircularProgress />}
         {units &&
           units.map((unit: Unit) => (
             <p key={unit.id}>
@@ -44,12 +48,19 @@ export const Test = () => {
               >
                 {unit.id} {unit.name}
               </button>
+              <button
+                onClick={() => {
+                  deleteItem(unit.id)
+                }}
+              >
+                -
+              </button>
             </p>
           ))}
       </Container>
       <Button
         onClick={() => {
-          console.log('waht thefuck')
+          refetch()
         }}
       >
         Reload
@@ -63,6 +74,6 @@ export const Test = () => {
         Create New Unit
       </Button>
       <Detail id={selectedDishId} />
-    </div>
+    </>
   )
 }

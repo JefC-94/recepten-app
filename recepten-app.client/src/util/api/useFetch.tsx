@@ -1,25 +1,33 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { Response } from '../../types'
 
-//Tried with custom fetch hook: deprecated
-//Replaced with useSWR
+const CACHE: any = {}
+
 export const useFetch = <R extends any = any>(url: string) => {
   const [data, setData] = useState<R | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<any | null>(null)
 
+  //make this a useCallback?
   const refetch = async (checkActive: any = () => true) => {
-    if (!url) return false
-    if (url.slice(-4) === 'null') {
-      return false
+    if (!url || url.slice(-4) === 'null') return false
+
+    if (CACHE[url] !== undefined) {
+      setData(CACHE[url])
+      setLoading(false)
+    } else {
+      setLoading(true)
     }
-    setLoading(true)
-    setData(null)
-    setError(null)
+
     try {
       const request = await axios.get(`http://localhost:7555/${url}`)
+      if (checkActive) {
+        CACHE[url] = request.data
+        setData(request.data)
+      }
+      setError(false)
       setLoading(false)
-      checkActive && setData(request.data)
     } catch (err: any) {
       setLoading(false)
       setData(null)
@@ -40,19 +48,26 @@ export const useFetch = <R extends any = any>(url: string) => {
   return { data, loading, error, refetch }
 }
 
-export const fetchPost = async (url: string, body: any) => {
+export const fetchPost = async (url: string, body: any): Promise<Response> => {
   if (!url || !body) {
-    return false
+    return { success: 0, message: 'incorrect request parameters' }
   }
   try {
-    const request = await axios.post(url, body)
-    if (request.data) {
-      return request.data[0]
-    } else {
-      return null
-    }
+    const request = await axios.post(`http://localhost:7555/${url}`, body)
+    return { success: 1, message: request.data[0] }
   } catch (err: any) {
-    console.log(err)
-    return null
+    return { success: 0, message: err.message }
+  }
+}
+
+export const fetchDelete = async (url: string, id: number): Promise<Response> => {
+  if (!url || !id) {
+    return { success: 0, message: 'incorrect request parameters' }
+  }
+  try {
+    const request = await axios.delete(`http://localhost:7555/${url}/${id}`)
+    return { success: 1, message: request.data[0] }
+  } catch (err: any) {
+    return { success: 0, message: err.message }
   }
 }

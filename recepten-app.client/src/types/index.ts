@@ -53,3 +53,8 @@ export type Dish = {
   types: Type[]
   favorite: boolean | null
 }
+
+export type Response = {
+  success: 0 | 1
+  message: string
+}

@@ -24,6 +24,9 @@ let theme = createTheme({
       main: base.border,
     },
   },
+  typography: {
+    fontFamily: 'Avenir, sans-serif',
+  },
 })
 
 theme = createTheme(theme, {

@@ -1,13 +1,12 @@
-import React from 'react'
 import { useFetch } from '../util/api/useFetch'
-import { Dish, Unit } from '../types/index'
+import { Unit } from '../types/index'
 
 type Props = {
   id: number | null
 }
 
 export const Detail = ({ id }: Props) => {
-  const { data: unit, loading, error, refetch } = useFetch<Unit>(`api/units/${id}`)
+  const { data: unit } = useFetch<Unit>(`api/units/${id}`)
 
   return (
     <div>
