@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
 import { Response } from '../../types'
 
@@ -9,31 +9,33 @@ export const useFetch = <R extends any = any>(url: string) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<any | null>(null)
 
-  //make this a useCallback?
-  const refetch = async (checkActive: any = () => true) => {
-    if (!url || url.slice(-4) === 'null') return false
+  const refetch = useCallback(
+    async (checkActive: any = () => true) => {
+      if (!url || url.slice(-4) === 'null') return false
 
-    if (CACHE[url] !== undefined) {
-      setData(CACHE[url])
-      setLoading(false)
-    } else {
-      setLoading(true)
-    }
-
-    try {
-      const request = await axios.get(`http://localhost:7555/${url}`)
-      if (checkActive) {
-        CACHE[url] = request.data
-        setData(request.data)
+      if (CACHE[url] !== undefined) {
+        setData(CACHE[url])
+        setLoading(false)
+      } else {
+        setLoading(true)
       }
-      setError(false)
-      setLoading(false)
-    } catch (err: any) {
-      setLoading(false)
-      setData(null)
-      setError(err)
-    }
-  }
+
+      try {
+        const request = await axios.get(`http://localhost:7555/${url}`)
+        if (checkActive) {
+          CACHE[url] = request.data
+          setData(request.data)
+        }
+        setError(false)
+        setLoading(false)
+      } catch (err: any) {
+        setLoading(false)
+        setData(null)
+        setError(err)
+      }
+    },
+    [url]
+  )
 
   useEffect(() => {
     let active: boolean = false
@@ -43,7 +45,7 @@ export const useFetch = <R extends any = any>(url: string) => {
     return () => {
       active = false
     }
-  }, [url])
+  }, [url, refetch])
 
   return { data, loading, error, refetch }
 }

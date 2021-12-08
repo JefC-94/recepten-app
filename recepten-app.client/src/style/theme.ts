@@ -32,6 +32,18 @@ let theme = createTheme({
 theme = createTheme(theme, {
   components: {
     MuiButton: Button,
+    MuiCssBaseline: {
+      styleOverrides: {
+        '*': {
+          boxSizing: 'border-box',
+        },
+        body: {
+          maxHeight: '100vh',
+          width: '100vw',
+          overflowX: 'hidden',
+        },
+      },
+    },
   },
 })
 
