@@ -35,7 +35,7 @@ export const Test = () => {
   return (
     <>
       {error && JSON.stringify(error)}
-      <Container>
+      <div>
         <h1>Units</h1>
         {loading && <CircularProgress />}
         {units &&
@@ -57,22 +57,22 @@ export const Test = () => {
               </button>
             </p>
           ))}
-      </Container>
-      <Button
+      </div>
+      <button
         onClick={() => {
           refetch()
         }}
       >
         Reload
-      </Button>
-      <Button
-        variant="primary"
+      </button>
+      <button
+        //variant="primary"
         onClick={() => {
           createNew()
         }}
       >
         Create New Unit
-      </Button>
+      </button>
       <Detail id={selectedDishId} />
     </>
   )
