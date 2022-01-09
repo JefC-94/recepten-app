@@ -1,4 +1,3 @@
-import { Button } from '@mui/material'
 import React from 'react'
 import { useUserContext } from '../contexts/UserContext'
 
@@ -8,13 +7,13 @@ export const Lobby = () => {
   return (
     <div>
       <p>Welcome to the application. Please login.</p>
-      <Button
+      <button
         onClick={() => {
           loginUser()
         }}
       >
         Login
-      </Button>
+      </button>
     </div>
   )
 }

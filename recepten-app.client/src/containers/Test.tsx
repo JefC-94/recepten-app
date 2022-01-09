@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { fetchDelete, fetchPost, useFetch } from '../util/api/useFetch'
-import { Button, CircularProgress, Container } from '@mui/material'
 import { Detail } from './Detail'
 import { Response, Unit } from '../types'
 
@@ -37,7 +36,7 @@ export const Test = () => {
       {error && JSON.stringify(error)}
       <div>
         <h1>Units</h1>
-        {loading && <CircularProgress />}
+        {loading && <p>Loading...</p>}
         {units &&
           units.map((unit: Unit) => (
             <p key={unit.id}>

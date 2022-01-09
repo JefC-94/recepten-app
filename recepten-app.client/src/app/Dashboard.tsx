@@ -1,45 +1,27 @@
 import { Test } from '../containers/Test'
 import { useUserContext } from '../contexts/UserContext'
 import { Link, Outlet } from 'react-router-dom'
-import { css } from '@stitches/core'
-
-const flex = css({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-})
-
-const header = css({
-  borderBottom: `2px solid black`,
-})
-
-const footer = css({
-  padding: '1rem',
-  borderTop: `2px solid black`,
-})
-
-const button = css({
-  padding: '8px 10px',
-})
+import { DarkToggle } from '../components/Darktoggle'
 
 export function Dashboard() {
   const { logoutUser } = useUserContext()
 
   return (
     <div className="dashboard-wrap">
-      <div className={`${header} ${flex}`}>
+      <div className="header">
         <p>The Recepten App</p>
         <button
-          className={`${button}`}
+          className="btn"
           onClick={() => {
             logoutUser()
           }}
         >
           Logout
         </button>
+        <DarkToggle />
       </div>
       <Outlet />
-      <div className={`${footer} ${flex}`}>
+      <div className="footer">
         <Link to="/dashboard/schedule">Schedule</Link>
         <Link to="/dashboard/recipes">Recipes</Link>
         <Link to="/dashboard/cart">Cart</Link>

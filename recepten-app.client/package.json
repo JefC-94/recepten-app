@@ -3,11 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/core": "^11.0.0",
-    "@emotion/react": "^11.6.0",
-    "@emotion/styled": "^11.6.0",
-    "@stitches/core": "^1.2.6",
-    "@stitches/react": "^1.2.6",
     "@testing-library/jest-dom": "^5.15.1",
     "@testing-library/react": "^10.4.9",
     "@testing-library/user-event": "^12.8.3",
