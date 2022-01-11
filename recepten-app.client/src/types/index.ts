@@ -7,7 +7,10 @@ export type { Cart, CartItem }
 export type UserContextProps = {
   rootState: AuthObject
   logoutUser: () => Promise<void>
-  loginUser: () => Promise<void>
+  registerUser: (user: User) => Promise<any>
+  loginUser: (user: User) => Promise<any>
+  editUser: (user: User) => Promise<any>
+  isLoggedIn: () => Promise<void>
 }
 
 export type AuthObject = {
@@ -19,6 +22,8 @@ export type User = {
   id: number
   username: string
   password: string
+  oldPassword?: string
+  newPassword?: string
   email: string
   photo_url: string | null
   created_at: number

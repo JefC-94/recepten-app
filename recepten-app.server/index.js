@@ -25,12 +25,12 @@ app.use(cors({ origin: 'http://localhost:3000' }))
 
 app.use(express.static(path.resolve(__dirname, '../recepten-app.client/build')))
 
+//Setup router for API routes
+mainRouter(app)
+
 app.get('/', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../recepten-app.client/build', 'index.html'))
 })
-
-//Setup router for API routes
-mainRouter(app)
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../recepten-app.client/build', 'index.html'))

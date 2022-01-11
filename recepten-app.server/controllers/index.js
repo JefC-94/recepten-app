@@ -10,8 +10,10 @@ const dishCatRouter = require('./dish-cat/dish-cat-routes')
 const dishCuisineRouter = require('./dish-cuisine/dish-cuisine-routes')
 const dishTypeRouter = require('./dish-type/dish-type-routes')
 const dishIngredientRouter = require('./dish-ingredient/dish-ingredient-routes')
+const authRouter = require('./auth/auth-routes')
 
 const mainRouter = function (app) {
+  app.use('/api/auth', authRouter)
   app.use('/api/ingredients', ingredientsRouter)
   app.use('/api/dishes', dishesRouter)
   app.use('/api/categories', catRouter)
