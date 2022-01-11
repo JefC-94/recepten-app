@@ -58,7 +58,7 @@ export const UserContextProvider = (props: any) => {
 
       const { data } = await axios.get('http://localhost:7555/api/auth/me')
 
-      //console.log(data); //logs current logged in user
+      // console.log(data) //logs current logged in user
 
       if (data.user) {
         setRootState(prevValue => ({ ...prevValue, isAuth: true, theUser: data.user }))
